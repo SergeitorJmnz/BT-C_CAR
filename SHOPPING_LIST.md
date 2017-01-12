@@ -12,11 +12,11 @@
 - Cables.
 - Pilas 1,5V.
 
-#SHOPPING LIST
+#SHOPPING LIST:
 
-- RC Car
-  -Chassis.
-  -2 DC motors.
+- RC Car:
+  - Chassis.
+  - 2 DC motors.
 - Arduino Uno.
 - Bluetooth module.
 - H bridge.
