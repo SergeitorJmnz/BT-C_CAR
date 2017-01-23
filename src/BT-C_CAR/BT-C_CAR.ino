@@ -1,7 +1,24 @@
+/*
+
+  BLUETOOTH CONTROLLED TUNING CAR
+  
+  Project by:
+  Pedro Lopez Escudero
+  Gabriel Bonilla Ruiz
+  Sergio Jimenez Salmeron
+  Javier Martin Fernandez
+  
+  26 Jan 2017
+  
+  You can find the entire project in:
+
+*/
+
 
 #include <SoftwareSerial.h>
 #include <TimerOne.h>
-SoftwareSerial BT(4,2); // 4 RX 2 TX
+
+SoftwareSerial BT(4,2);                                    // 4 RX 2 TX
 #define IN1 8
 #define IN2 9
 #define IN3 12
@@ -25,22 +42,21 @@ volatile int luces = 0;
 
 void setup() {
 
-  BT.begin(9600);   // Configuración del puerto serie
+  BT.begin(9600);                                                // Serial Port Configuration 
 
-  
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
   pinMode(PWM, OUTPUT);
 
-  Timer1.initialize(10000);         // Dispara cada 240 ms
-  Timer1.attachInterrupt(ISR_Blink); // Activa la interrupcion y la asocia a ISR_Blink
+  Timer1.initialize(10000);                                      // Dispara cada 240 ms
+  Timer1.attachInterrupt(ISR_Blink);                             // Activa la interrupcion y la asocia a ISR_Blink
 
-  analogWrite(PWM, Velocidad);   // turn the LED on (HIGH is the voltage level)
+  analogWrite(PWM, Velocidad);                                   // turn the LED on (HIGH is the voltage level)
   analogWrite(PWM2, VelocidadDir);
-  //Sonido
-  pinMode(claxon, OUTPUT);
+                                                                          
+  pinMode(claxon, OUTPUT);                                       //Sonido
 }
 
 void loop() {
@@ -119,31 +135,22 @@ void loop() {
             analogWrite(faros,0);
           }
         break;
-      /*default:
-      Serial.println("Pulse tecla de movimiento: /n");
-      //digitalWrite(IN1, LOW);
-      //digitalWrite(IN2, LOW);
-      break;*/
     }
-  //Serial.println(Orden);
   }
-
 }
 
 void ISR_Blink () {
+  
   if (sum == 1){
-    xenon_cont+=5;
+    xenon_cont += 5;
     if (xenon_cont >= 255){
       sum = 0;  
     }
   } else if (sum == 0){
-    xenon_cont-=5;
+    xenon_cont -= 5;
     if (xenon_cont <= 0){
       sum = 1;
     }
   }
   analogWrite(xenon,xenon_cont);
 }  
-//http://roboticgiraldo.blogspot.com.es/p/coche-rc-con-arduino.html   Enlace coche Rc ejemplo
-
-
