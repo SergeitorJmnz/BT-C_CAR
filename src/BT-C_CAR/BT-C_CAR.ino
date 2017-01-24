@@ -18,8 +18,8 @@
 #include <SoftwareSerial.h>
 #include <TimerOne.h>
 
-SoftwareSerial BT(4,2);                                    // 4 RX 2 TX
-#define IN1 8
+SoftwareSerial BT(4,2);                            // Configure the Bluetooth module ports (pin 4 to receive, pin 2 to transfer)
+#define IN1 8                                      
 #define IN2 9
 #define IN3 12
 #define IN4 13
@@ -30,7 +30,7 @@ SoftwareSerial BT(4,2);                                    // 4 RX 2 TX
 #define xenon 11
 
 
-volatile int Velocidad = 100;
+volatile int Velocidad = 100;                     
 volatile int VelocidadDir = 255;
 volatile char Orden;
 volatile int ClaxEnc = 0;
@@ -42,37 +42,40 @@ volatile int luces = 0;
 
 void setup() {
 
-  BT.begin(9600);                                                // Serial Port Configuration 
+  BT.begin(9600);                                  // Serial Port Configuration 
 
-  pinMode(IN1, OUTPUT);
+  pinMode(IN1, OUTPUT);                            // Configure the H bridge pins
   pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
   pinMode(PWM, OUTPUT);
 
-  Timer1.initialize(10000);                                      // Dispara cada 240 ms
-  Timer1.attachInterrupt(ISR_Blink);                             // Activa la interrupcion y la asocia a ISR_Blink
+  Timer1.initialize(10000);                        // Initialize the Timer1 at 240 ms
+  Timer1.attachInterrupt(ISR_Blink);               // Activates the Interrupt Rountine of Timer1 asociated to ISR_Blink
 
-  analogWrite(PWM, Velocidad);                                   // turn the LED on (HIGH is the voltage level)
-  analogWrite(PWM2, VelocidadDir);
+  analogWrite(PWM, Velocidad);                     // Configure the PWM of the H bridge for IN3 and IN4
+  analogWrite(PWM2, VelocidadDir);                 // Configure the PWM of the H bridge for IN1 and IN2
                                                                           
-  pinMode(claxon, OUTPUT);                                       //Sonido
+  pinMode(claxon, OUTPUT);                         // Configure the output pin of the buzzer
 }
 
-void loop() {
+void loop() {                                                    
   
-  if (BT.available()){
+  if (BT.available()){                                            
       Orden = BT.read();
       switch (Orden){
-        case 'f': // adelante
+        
+        case 'f':                                  // In case you want to move forward
           digitalWrite(IN3, LOW);
           digitalWrite(IN4, HIGH);
         break;
-        case 'b': //atras
+        
+        case 'b':                                  // In case you want to move backward
           digitalWrite(IN3, HIGH);
           digitalWrite(IN4, LOW);
         break;
-        case 'i': //izquierda
+        
+        case 'i':                                  // In case you want to turn to the left
           if (direccion_der == 1){
             digitalWrite(IN1, LOW);
             digitalWrite(IN2, LOW);
@@ -83,7 +86,8 @@ void loop() {
             direccion_izq = 1;
           }
         break;
-        case 'd': //derecha
+        
+        case 'd':                                  // In case you want to turn to the right
           if (direccion_izq == 1){
             digitalWrite(IN1, LOW);
             digitalWrite(IN2, LOW);
@@ -95,7 +99,7 @@ void loop() {
           }
         break;
     
-        case 's': //parar
+        case 's':                                  // In case you want to stop the car.
           digitalWrite(IN1, LOW);
           digitalWrite(IN2, LOW);
           digitalWrite(IN3, LOW);
@@ -104,20 +108,21 @@ void loop() {
           analogWrite(PWM, Velocidad);
         break;
     
-        case 'p': //mas velocidad
+        case 'p':                                  // In case you want to go faster
           if(Velocidad < 255){
             Velocidad+=10;
           }
           analogWrite(PWM, Velocidad);
         break;
     
-        case 'n': // menos velocidad
+        case 'n':                                  // In case you want to go slower
           if(Velocidad > 0){
             Velocidad-=10;
           }
           analogWrite(PWM, Velocidad);
         break;
-        case 'a': //claxon
+        
+        case 'a':                                  // Beep of the buzzer
           if(!ClaxEnc){
             ClaxEnc = 1;
             analogWrite(claxon,200);
@@ -126,7 +131,8 @@ void loop() {
             analogWrite(claxon,0);
           }
         break;
-        case 'l': //luces
+        
+        case 'l':                                  // Turn on the frontal lights
           if(!luces){
             luces = 1;
             analogWrite(faros,255);
@@ -139,7 +145,7 @@ void loop() {
   }
 }
 
-void ISR_Blink () {
+void ISR_Blink () {                                // Interrupt Routine asociated to Timer1. Turns off/on gradually the LEDs that simulates the neon lights
   
   if (sum == 1){
     xenon_cont += 5;
