@@ -29,7 +29,7 @@
 - Resistors 220 ohms (x2).
 - Buzzer.
 - Wires of different colors.
-- Batteries 1.5V (x5).
+- 1.5V batteries(x5).
 - 9V battery.
 - Perforated plate.
 - Black spray paint.
